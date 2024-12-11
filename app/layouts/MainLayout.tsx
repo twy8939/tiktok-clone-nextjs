@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import TopNav from "./includes/TopNav";
+import SideNavBar from "./includes/SideNav";
 
 export default function MainLayout({
   children,
@@ -17,6 +18,7 @@ export default function MainLayout({
           pathname === "/" ? "max-w-[1140px]" : ""
         }`}
       >
+        <SideNavBar />
         {children}
       </div>
     </>
