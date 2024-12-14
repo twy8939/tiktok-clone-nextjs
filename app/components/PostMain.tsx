@@ -6,6 +6,7 @@ import { PostMainCompTypes } from "../types";
 import Link from "next/link";
 import { ImMusic } from "react-icons/im";
 import { AiFillHeart } from "react-icons/ai";
+import PostMainLikes from "./PostMainLikes";
 
 export default function PostMain({ post }: PostMainCompTypes) {
   useEffect(() => {
@@ -77,6 +78,8 @@ export default function PostMain({ post }: PostMainCompTypes) {
                 className="absolute right-2 bottom-10"
               />
             </div>
+
+            <PostMainLikes post={post} />
           </div>
         </div>
       </div>

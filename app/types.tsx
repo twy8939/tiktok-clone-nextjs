@@ -4,12 +4,6 @@ export interface RandomUsers {
   image: string;
 }
 
-// COMPONENT TYPES
-
-export interface PostMainCompTypes {
-  post: PostWithProfile;
-}
-
 export interface PostWithProfile {
   id: string;
   user_id: string;
@@ -22,6 +16,31 @@ export interface PostWithProfile {
     image: string;
   };
 }
+
+export interface Likes {
+  id: string;
+  user_id: string;
+  post_id: string;
+}
+
+export interface Comment {
+  id: string;
+  user_id: string;
+  post_id: string;
+  text: string;
+  create_at: string;
+}
+
+// COMPONENT TYPES
+
+export interface PostMainCompTypes {
+  post: PostWithProfile;
+}
+
+export interface PostMainLikesCompTypes {
+  post: PostWithProfile;
+}
+
 // LAYOUT INCLUDE TYPES
 
 export interface MenuItemsTypes {
