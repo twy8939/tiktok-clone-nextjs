@@ -31,6 +31,11 @@ export interface Comment {
   create_at: string;
 }
 
+export interface UploadError {
+  type: string;
+  message: string;
+}
+
 // COMPONENT TYPES
 
 export interface PostMainCompTypes {
