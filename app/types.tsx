@@ -4,6 +4,18 @@ export interface RandomUsers {
   image: string;
 }
 
+export interface CropperDimensions {
+  height?: number | null;
+  width?: number | null;
+  left?: number | null;
+  right?: number | null;
+}
+
+export interface ShowErrorObject {
+  type: string;
+  message: string;
+}
+
 export interface PostWithProfile {
   id: string;
   user_id: string;

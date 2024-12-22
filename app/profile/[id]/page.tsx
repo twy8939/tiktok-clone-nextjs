@@ -2,6 +2,7 @@
 "use client";
 
 import ClientOnly from "@/app/components/ClientOnly";
+import EditProfileOverlay from "@/app/components/profile/EditProfileOverlay";
 import PostUser from "@/app/components/profile/PostUser";
 import MainLayout from "@/app/layouts/MainLayout";
 import { ProfilePageTypes } from "@/app/types";
@@ -17,6 +18,7 @@ export default function Profile({ parmas }: ProfilePageTypes) {
   };
   return (
     <>
+      <EditProfileOverlay />
       <MainLayout>
         <div className="pt-[90px] ml-[90px] 2xl:pl-[185px] lg:pl-[160px] lg:pr-0 w-[calc(100%-90px)] pr-3 max-w-[1800px] 2xl:mx-auto">
           <div className="flex w-[calc(100%-230px)]]">
