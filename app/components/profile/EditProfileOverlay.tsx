@@ -5,6 +5,8 @@ import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { BsPencil } from "react-icons/bs";
 import TextInput from "../TextInput";
+import { Cropper } from "react-advanced-cropper";
+import "react-advanced-cropper/dist/style.css";
 
 export default function EditProfileOverlay() {
   const router = useRouter();
@@ -20,8 +22,16 @@ export default function EditProfileOverlay() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<ShowErrorObject | null>(null);
 
-  const getUploadImage = () => {
-    console.log("getUploadImage");
+  const getUploadImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files && event.target.files[0];
+
+    if (selectedFile) {
+      setFile(selectedFile);
+      setUploadedImage(URL.createObjectURL(selectedFile));
+    } else {
+      setFile(null);
+      setUploadedImage(null);
+    }
   };
 
   const showError = (type: string) => {
@@ -142,7 +152,14 @@ export default function EditProfileOverlay() {
                 </div>
               </div>
             ) : (
-              <div></div>
+              <div className="w-full max-h-[420px] mx-auto bg-black circle-stencil">
+                <Cropper
+                  stencilProps={{ aspectRatio: 1 }}
+                  className="h-[400px]"
+                  onChange={(cropper) => setCropper(cropper.getCoordinates())}
+                  src={uploadedImage}
+                />
+              </div>
             )}
           </div>
         </div>
