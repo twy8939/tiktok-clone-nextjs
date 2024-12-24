@@ -115,6 +115,31 @@ export default function EditProfileOverlay() {
                     </div>
                   </div>
                 </div>
+
+                <div
+                  id="UserBioSection"
+                  className="flex flex-col sm:h-[120px] px-1.5 py-2 mt-2 w-full"
+                >
+                  <h3 className="font-semibold text-[15px] sm:mb-0 mb-1 text-gray sm:w-[160px] sm:text-left text-center">
+                    Bio
+                  </h3>
+
+                  <div className="flex items-center justify-center sm:-mt-6">
+                    <div className="sm:w-[60%] w-full max-w-md">
+                      <textarea
+                        cols={30}
+                        rows={4}
+                        onChange={(e) => setUserBio(e.target.value)}
+                        value={userBio || ""}
+                        maxLength={80}
+                        className="resize-none w-full bg-[#F1F1F2] text-gray-800 border border-gary-300 rounded-md py-2.5 px-3 focus:outline-none"
+                      ></textarea>
+                      <p className="text-[11px] text-gray-500">
+                        {userBio ? userBio.length : 0}/80
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div></div>
