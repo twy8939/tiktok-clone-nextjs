@@ -2,15 +2,16 @@
 "use client";
 
 import ClientOnly from "@/app/components/ClientOnly";
+import Comments from "@/app/components/post/Comments";
 import CommentsHeader from "@/app/components/post/CommentsHeader";
 import { PostPageTypes } from "@/app/types";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { AiOutlineClose } from "react-icons/ai";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 
 export default function Post() {
-  const router = useRouter();
+  // const router = useRouter();
   const params = useParams<PostPageTypes>();
 
   const postById = {
@@ -101,6 +102,7 @@ export default function Post() {
           <ClientOnly>
             {postById ? <CommentsHeader post={postById} /> : null}
           </ClientOnly>
+          <Comments />
         </div>
       </div>
     </>
