@@ -1,11 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useState } from "react";
 import ClientOnly from "../ClientOnly";
 import SingleComment from "./SingleComment";
+import { BiLoaderCircle } from "react-icons/bi";
 
 export default function Comments() {
   // const params = useParams<PostPageTypes>();
+
+  const [comment, setComment] = useState<string>("");
+  const [inputFocused, setInputFocused] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const commentsByPost = [
     {
@@ -21,6 +27,10 @@ export default function Comments() {
       },
     },
   ];
+
+  const addComment = () => {
+    console.log("addComment");
+  };
 
   return (
     <>
@@ -44,6 +54,46 @@ export default function Comments() {
         </ClientOnly>
 
         <div className="mb-28" />
+
+        <div
+          id="CreateComment"
+          className="absolute flex items-center justify-between bottom-0 bg-white h-[85px] lg:max-w-[550px] w-full py-5 px-8 border-t-2"
+        >
+          <div
+            className={`bg-[#F1F1F2] flex items-center rounded-lg w-full lg:max-w-[420px] ${
+              inputFocused
+                ? "border-2 border-gray-400"
+                : "border-2 border-[#F1F1F2]"
+            }`}
+          >
+            <input
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              onChange={(e) => setComment(e.target.value)}
+              value={comment || ""}
+              className="bg-[#F1F1F2] text-[14px] focus:outline-none w-full lg:max-w-[420px] p-2 rounded-lg"
+              type="text"
+              placeholder="Add comment..."
+            />
+          </div>
+          {!isUploading ? (
+            <button
+              disabled={!comment}
+              onClick={() => addComment()}
+              className={`font-semibold text-sm ml-5 pr-1 ${
+                comment ? "text-[#F02C56] cursor-pointer" : "text-gray-400"
+              }`}
+            >
+              Post
+            </button>
+          ) : (
+            <BiLoaderCircle
+              className="animate-spin"
+              size="20"
+              color="#E91E62"
+            />
+          )}
+        </div>
       </div>
     </>
   );
