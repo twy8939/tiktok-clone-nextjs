@@ -3,10 +3,10 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { User, UserContextTypes } from "../types";
-import { useRouter } from "next/router";
 import { account, ID } from "@/libs/AppWriteClient";
 import useGetProfileByUserId from "../hooks/useGetProfileByUserId";
 import useCreateProfile from "../hooks/useCreateProfile";
+import { useRouter } from "next/navigation";
 
 const UserContext = createContext<UserContextTypes | null>(null);
 
@@ -32,6 +32,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         image: profile?.image,
       });
     } catch (error) {
+      console.error(error);
       setUser(null);
     }
   };
@@ -40,7 +41,15 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     checkUser();
   }, []);
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async ({
+    email,
+    password,
+    name,
+  }: {
+    email: string;
+    password: string;
+    name: string;
+  }) => {
     try {
       const promise = await account.create(ID.unique(), email, password, name);
       await account.createEmailPasswordSession(email, password);
@@ -57,7 +66,13 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
     try {
       await account.createEmailPasswordSession(email, password);
       await checkUser();
@@ -70,7 +85,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       await account.deleteSession("current");
       setUser(null);
-      router.reload();
+      router.refresh();
     } catch (error) {
       throw error;
     }

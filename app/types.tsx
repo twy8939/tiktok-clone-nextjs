@@ -1,7 +1,21 @@
 export interface UserContextTypes {
   user: User | null;
-  register: (email: string, password: string, name: string) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  register: ({
+    email,
+    password,
+    name,
+  }: {
+    email: string;
+    password: string;
+    name: string;
+  }) => Promise<void>;
+  login: ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => Promise<void>;
   logout: () => Promise<void>;
   checkUser: () => Promise<void>;
 }
