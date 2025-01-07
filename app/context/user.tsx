@@ -52,7 +52,28 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         ""
       );
       await checkUser();
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    try {
+      await account.createEmailPasswordSession(email, password);
+      await checkUser();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await account.deleteSession("current");
+      setUser(null);
+      router.reload();
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
