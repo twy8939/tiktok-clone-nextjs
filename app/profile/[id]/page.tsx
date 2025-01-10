@@ -8,7 +8,7 @@ import MainLayout from "@/app/layouts/MainLayout";
 import { ProfilePageTypes } from "@/app/types";
 import { BsPencil } from "react-icons/bs";
 
-export default function Profile({ parmas }: ProfilePageTypes) {
+export default function Profile({ params }: ProfilePageTypes) {
   const currentProfile = {
     id: "123",
     user_id: "123",
