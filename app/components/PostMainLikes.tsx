@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Comment, Likes, PostMainLikesCompTypes } from "../types";
+import { Comment, Like, PostMainLikesCompTypes } from "../types";
 import { AiFillHeart } from "react-icons/ai";
 import { BiLoaderCircle } from "react-icons/bi";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ export default function PostMainLikes({ post }: PostMainLikesCompTypes) {
 
   const [hasClickedLike, setHasClickedLike] = useState<boolean>(false);
   const [userLiked, setUserLiked] = useState<boolean>(false);
-  const [likes, setLikes] = useState<Likes[]>([]);
+  const [likes, setLikes] = useState<Like[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
 
   const likeOrUnlike = () => {

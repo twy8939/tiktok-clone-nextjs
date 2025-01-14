@@ -58,7 +58,7 @@ export interface PostWithProfile {
   };
 }
 
-export interface Likes {
+export interface Like {
   id: string;
   user_id: string;
   post_id: string;
