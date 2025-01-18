@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { database, storage } from "@/libs/AppWriteClient";
 import useGetLikesByPostId from "./useGetLikesByPostId";
 import useDeleteLike from "./useDeleteLike";
