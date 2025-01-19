@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <MainLayout>
-        <div className="mt-[80px] w-[calc(100%-90px)] max-w[690px] ml-auto">
+        <div className="mt-[80px] w-[calc(100%-90px)] max-w-[690px] ml-auto">
           <ClientOnly>
             <PostMain
               post={{
