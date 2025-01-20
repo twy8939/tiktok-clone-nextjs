@@ -2,7 +2,7 @@
 import { database } from "@/libs/AppWriteClient";
 import useGetProfileByUserId from "./useGetProfileByUserId";
 
-const useGetAllPosts = async (id: string) => {
+const useGetPostById = async (id: string) => {
   try {
     const post = await database.getDocument(
       String(process.env.NEXT_PUBLIC_DATABASE_ID),
@@ -29,4 +29,4 @@ const useGetAllPosts = async (id: string) => {
   }
 };
 
-export default useGetAllPosts;
+export default useGetPostById;

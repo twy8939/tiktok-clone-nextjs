@@ -14,7 +14,7 @@ const useGetPostsByUser = async (userId: string) => {
       user_id: doc?.user_id,
       video_url: doc?.video_url,
       text: doc?.text,
-      create_at: doc?.created_at,
+      created_at: doc?.created_at,
     }));
 
     return result;
