@@ -1,17 +1,33 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { CommentsHeaderCompTypes, PostPageTypes } from "@/app/types";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiLoaderCircle } from "react-icons/bi";
 import { BsChatDots, BsTrash3 } from "react-icons/bs";
 import { ImMusic } from "react-icons/im";
 import ClientOnly from "../ClientOnly";
 import { AiFillHeart } from "react-icons/ai";
+import { useLikeStore } from "@/app/stores/like";
+import { useCommentStore } from "@/app/stores/comment";
+import { useGeneralStore } from "@/app/stores/general";
+import { useUser } from "@/app/context/user";
+import useIsLiked from "@/app/hooks/useIsLiked";
+import useCreateLike from "@/app/hooks/useCreateLike";
+import useDeleteLike from "@/app/hooks/useDeleteLike";
+import useDeletePostById from "@/app/hooks/useDeletePostById";
+import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
 
 export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
+  const { setLikesByPost, likesByPost } = useLikeStore();
+  const { commentsByPost, setCommentsByPost } = useCommentStore();
+  const { setIsLoginOpen } = useGeneralStore();
+
+  const contextUser = useUser();
+
   const params = useParams<PostPageTypes>();
 
   const router = useRouter();
@@ -20,13 +36,93 @@ export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [userLiked, setUserLiked] = useState<boolean>(false);
 
-  const deletePost = () => {
-    console.log("deletePost");
+  const hasUserLikedPost = () => {
+    if (likesByPost.length < 1 || contextUser?.user?.id) {
+      setUserLiked(false);
+      return;
+    }
+    const res = useIsLiked(
+      contextUser?.user?.id || "",
+      params.postId,
+      likesByPost
+    );
+    setUserLiked(res ? true : false);
+  };
+
+  const like = async () => {
+    try {
+      setHasClickedLike(true);
+      await useCreateLike(contextUser?.user?.id || "", params.postId);
+      setLikesByPost(params.postId);
+      setHasClickedLike(false);
+    } catch (error) {
+      console.log(error);
+      alert(error);
+      setHasClickedLike(false);
+    }
+  };
+
+  const unlike = async (id: string) => {
+    try {
+      setHasClickedLike(true);
+      await useDeleteLike(id);
+      setLikesByPost(params.postId);
+      setHasClickedLike(false);
+    } catch (error) {
+      console.log(error);
+      alert(error);
+      setHasClickedLike(false);
+    }
   };
 
   const likeOrUnLike = () => {
-    console.log("likeOrUnLike");
+    if (!contextUser?.user) return setIsLoginOpen(true);
+
+    const res = useIsLiked(
+      contextUser?.user?.id || "",
+      params.postId,
+      likesByPost
+    );
+    if (!res) {
+      like();
+    } else {
+      likesByPost.forEach((like) => {
+        if (
+          contextUser?.user?.id &&
+          contextUser.user.id === like.user_id &&
+          like.post_id === params.postId
+        ) {
+          unlike(like.id);
+        }
+      });
+    }
   };
+
+  const deletePost = async () => {
+    const res = confirm("Are you sure you want to delete this post?");
+    if (!res) return;
+
+    setIsDeleting(true);
+
+    try {
+      await useDeletePostById(params?.postId, post?.video_url);
+      router.push(`/profile/${params.userId}`);
+      setIsDeleting(false);
+    } catch (error) {
+      console.log(error);
+      setIsDeleting(false);
+      alert(error);
+    }
+  };
+
+  useEffect(() => {
+    setCommentsByPost(params?.postId);
+    setLikesByPost(params?.postId);
+  }, [post]);
+
+  useEffect(() => {
+    hasUserLikedPost();
+  }, [likesByPost]);
 
   return (
     <>
@@ -37,7 +133,7 @@ export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
               <img
                 className="rounded-full lg:mx-0 mx-auto"
                 width="40"
-                src={post?.profile.image}
+                src={useCreateBucketUrl(post?.profile.image)}
                 alt={"profile"}
               />
             ) : (
@@ -62,7 +158,7 @@ export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
           </div>
         </div>
 
-        {true ? (
+        {contextUser?.user?.id === post?.user_id ? (
           <div>
             {isDeleting ? (
               <BiLoaderCircle size="25" className="animate-spin" />
@@ -91,7 +187,10 @@ export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
               onClick={() => likeOrUnLike()}
             >
               {!hasClickedLike ? (
-                <AiFillHeart size="25" />
+                <AiFillHeart
+                  size="25"
+                  color={likesByPost?.length > 0 && userLiked ? "#ff2626" : ""}
+                />
               ) : (
                 <BiLoaderCircle className="animate-spin" size="25" />
               )}
@@ -105,7 +204,9 @@ export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
           <div className="rounded-full bg-gray-200 p-2 cursor-pointer">
             <BsChatDots size="25" />
           </div>
-          <span className="text-xs pl-2 text-gray-800 font-semibold">4</span>
+          <span className="text-xs pl-2 text-gray-800 font-semibold">
+            {commentsByPost?.length}
+          </span>
         </div>
       </div>
     </>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -5,31 +6,38 @@ import { useState } from "react";
 import ClientOnly from "../ClientOnly";
 import SingleComment from "./SingleComment";
 import { BiLoaderCircle } from "react-icons/bi";
+import { useCommentStore } from "@/app/stores/comment";
+import { useUser } from "@/app/context/user";
+import { useGeneralStore } from "@/app/stores/general";
+import useCreateComment from "@/app/hooks/useCreateComment";
+import { useParams } from "next/navigation";
+import { PostPageTypes } from "@/app/types";
 
 export default function Comments() {
-  // const params = useParams<PostPageTypes>();
+  const params = useParams<PostPageTypes>();
+
+  const { commentsByPost, setCommentsByPost } = useCommentStore();
+  const { setIsLoginOpen } = useGeneralStore();
+
+  const contextUser = useUser();
 
   const [comment, setComment] = useState<string>("");
   const [inputFocused, setInputFocused] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const commentsByPost = [
-    {
-      id: "123",
-      user_id: "456",
-      post_id: "987",
-      text: "this is some text",
-      create_at: "date here",
-      profile: {
-        user_id: "456",
-        name: "User 1",
-        image: "https://placehold.co/100",
-      },
-    },
-  ];
+  const addComment = async () => {
+    if (!contextUser?.user) return setIsLoginOpen(true);
 
-  const addComment = () => {
-    console.log("addComment");
+    try {
+      setIsUploading(true);
+      await useCreateComment(contextUser?.user?.id, params?.postId, comment);
+      setCommentsByPost(params?.postId);
+      setComment("");
+      setIsUploading(false);
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
   };
 
   return (

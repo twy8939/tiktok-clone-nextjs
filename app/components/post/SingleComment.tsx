@@ -1,20 +1,39 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { SingleCommentCompTypes } from "@/app/types";
+import { useUser } from "@/app/context/user";
+import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
+import useDeleteComment from "@/app/hooks/useDeleteComment";
+import { useCommentStore } from "@/app/stores/comment";
+import { PostPageTypes, SingleCommentCompTypes } from "@/app/types";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { BiLoaderCircle } from "react-icons/bi";
 import { BsTrash3 } from "react-icons/bs";
 
 export default function SingleComment({ comment }: SingleCommentCompTypes) {
-  // const params = useParams<PostPageTypes>();
+  const params = useParams<PostPageTypes>();
+
+  const contextUser = useUser();
+  const { setCommentsByPost } = useCommentStore();
 
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
-  const deleteThisComment = () => {
+  const deleteThisComment = async () => {
     const res = confirm("Are you sure you want to delete this comment?");
     if (!res) return;
+
+    try {
+      setIsDeleting(true);
+      await useDeleteComment(comment?.id);
+      setCommentsByPost(params?.postId);
+      setIsDeleting(false);
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
   };
 
   return (
@@ -28,7 +47,7 @@ export default function SingleComment({ comment }: SingleCommentCompTypes) {
             <img
               className="absolute top-0 rounded-full lg:mx-0 mx-auto"
               width="40"
-              src={comment.profile.image}
+              src={useCreateBucketUrl(comment.profile.image)}
               alt="profile"
             />
           </Link>
@@ -41,7 +60,7 @@ export default function SingleComment({ comment }: SingleCommentCompTypes) {
                 </span>
               </span>
 
-              {true ? (
+              {contextUser?.user?.id === comment.profile.user_id ? (
                 <button disabled={isDeleting} onClick={deleteThisComment}>
                   {isDeleting ? (
                     <BiLoaderCircle
