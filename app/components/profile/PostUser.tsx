@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
 import { PostUserCompTypes } from "@/app/types";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -38,7 +40,7 @@ export default function PostUser({ post }: PostUserCompTypes) {
               muted
               loop
               className="aspect-[3/4] object-cover rounded-md max-h-[300px]"
-              src={post.video_url}
+              src={useCreateBucketUrl(post.video_url)}
             />
           </Link>
         )}

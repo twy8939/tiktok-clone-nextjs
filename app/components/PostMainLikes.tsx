@@ -1,21 +1,105 @@
-import { useState } from "react";
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState } from "react";
 import { Comment, Like, PostMainLikesCompTypes } from "../types";
 import { AiFillHeart } from "react-icons/ai";
 import { BiLoaderCircle } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 import { FaCommentDots, FaShare } from "react-icons/fa";
+import { useGeneralStore } from "../stores/general";
+import { useUser } from "../context/user";
+import useGetCommentsByPostId from "../hooks/useGetCommentsByPostId";
+import useGetLikesByPostId from "../hooks/useGetLikesByPostId";
+import useIsLiked from "../hooks/useIsLiked";
+import useCreateLike from "../hooks/useCreateLike";
+import useDeleteLike from "../hooks/useDeleteLike";
 
 export default function PostMainLikes({ post }: PostMainLikesCompTypes) {
+  const { setIsLoginOpen } = useGeneralStore();
+
   const router = useRouter();
+  const contextUser = useUser();
 
   const [hasClickedLike, setHasClickedLike] = useState<boolean>(false);
   const [userLiked, setUserLiked] = useState<boolean>(false);
   const [likes, setLikes] = useState<Like[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
 
-  const likeOrUnlike = () => {
-    console.log("like or unlike");
+  useEffect(() => {
+    getAllLikesByPost();
+    getAllCommentsByPost();
+  }, [post]);
+
+  useEffect(() => {
+    hasUserLikedPost();
+  }, [likes, contextUser]);
+
+  const getAllCommentsByPost = async () => {
+    const result = await useGetCommentsByPostId(post?.id);
+    setComments(result);
   };
+
+  const getAllLikesByPost = async () => {
+    const result = await useGetLikesByPostId(post?.id);
+    setLikes(result);
+  };
+
+  const hasUserLikedPost = () => {
+    if (!contextUser) return;
+
+    if (likes?.length < 1 || !contextUser?.user?.id) {
+      setUserLiked(false);
+      return;
+    }
+
+    const res = useIsLiked(contextUser?.user?.id, post?.id, likes);
+    setUserLiked(res ? true : false);
+  };
+
+  const like = async () => {
+    try {
+      setHasClickedLike(true);
+      await useCreateLike(contextUser?.user?.id || "", post?.id);
+      await getAllLikesByPost();
+      hasUserLikedPost();
+      setHasClickedLike(false);
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+
+  const unlike = async (id: string) => {
+    try {
+      setHasClickedLike(true);
+      await useDeleteLike(id);
+      await getAllLikesByPost();
+      hasUserLikedPost();
+      setHasClickedLike(false);
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+
+  const likeOrUnlike = () => {
+    if (!contextUser?.user) return setIsLoginOpen(true);
+
+    const res = useIsLiked(contextUser?.user?.id || "", post?.id, likes);
+    if (!res) {
+      like();
+    } else {
+      likes.forEach((like) => {
+        if (
+          contextUser?.user?.id &&
+          contextUser.user.id === like.user_id &&
+          like.post_id === post?.id
+        ) {
+          unlike(like.id);
+        }
+      });
+    }
+  };
+
   return (
     <>
       <div id={`PostMain-${post.id}`} className="relative mr-[75px]">

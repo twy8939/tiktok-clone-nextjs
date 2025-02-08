@@ -75,7 +75,7 @@ export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
     }
   };
 
-  const likeOrUnLike = () => {
+  const likeOrUnlike = () => {
     if (!contextUser?.user) return setIsLoginOpen(true);
 
     const res = useIsLiked(
@@ -83,6 +83,7 @@ export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
       params.postId,
       likesByPost
     );
+
     if (!res) {
       like();
     } else {
@@ -184,7 +185,7 @@ export default function CommentsHeader({ post }: CommentsHeaderCompTypes) {
             <button
               className="rounded-full bg-gray-200 p-2 cursor-pointer"
               disabled={hasClickedLike}
-              onClick={() => likeOrUnLike()}
+              onClick={() => likeOrUnlike()}
             >
               {!hasClickedLike ? (
                 <AiFillHeart
