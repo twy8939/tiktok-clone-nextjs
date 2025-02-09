@@ -1,7 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @next/next/no-img-element */
 import { useUser } from "@/app/context/user";
+import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
+import useSearchProfilesByName from "@/app/hooks/useSearchProfilesByName";
 import { useGeneralStore } from "@/app/stores/general";
 import { RandomUsers } from "@/app/types";
+import debounce from "debounce";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -19,9 +23,22 @@ export default function TopNav() {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const { setIsLoginOpen, setIsEditProfileOpen } = useGeneralStore();
 
-  const handleSearchName = (e: { target: { value: string } }) => {
-    console.log(e.target.value);
-  };
+  const handleSearchName = debounce(
+    async (e: { target: { value: string } }) => {
+      if (e.target.value === "") return setSearchProfiles([]);
+
+      try {
+        const result = await useSearchProfilesByName(e.target.value);
+        if (result) return setSearchProfiles(result);
+        setSearchProfiles([]);
+      } catch (error) {
+        console.log(error);
+        setSearchProfiles([]);
+        alert(error);
+      }
+    },
+    500
+  );
 
   const goTo = () => {
     if (!contextUser?.user) return setIsLoginOpen(true);
@@ -59,24 +76,29 @@ export default function TopNav() {
               placeholder="Search accounts"
             />
 
-            <div className="absolute bg-white max-w-[910px] h-auto w-full z-20 left-0 top-12 border p-1">
-              <div className="p-1">
-                <Link
-                  href={`/profile/1`}
-                  className="flex items-center justify-between w-full cursor-pointer hover:bg-[#F12B56] p-1 px-2 hover:text-white"
-                >
-                  <div className="flex items-center">
-                    <img
-                      className="rounded-md"
-                      width={40}
-                      src="https://placehold.co/40"
-                      alt="profile"
-                    />
-                    <div className="truncate ml-2">KimYongMin</div>
+            {searchProfiles.length > 0 ? (
+              <div className="absolute bg-white max-w-[910px] h-auto w-full z-20 left-0 top-12 border p-1">
+                {searchProfiles.map((profile) => (
+                  <div className="p-1" key={profile?.id}>
+                    <Link
+                      href={`/profile/${profile?.id}`}
+                      className="flex items-center justify-between w-full cursor-pointer hover:bg-[#F12B56] p-1 px-2 hover:text-white"
+                    >
+                      <div className="flex items-center">
+                        <img
+                          className="rounded-md"
+                          width={40}
+                          src={useCreateBucketUrl(profile?.image)}
+                          alt="profile"
+                        />
+                        <div className="truncate ml-2">{profile?.name}</div>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
+                ))}
               </div>
-            </div>
+            ) : null}
+
             <div className="px-3 py-1 flex items-center border-l border-l-gray-300">
               <BiSearch color="#A1A2A7" size={22} />
             </div>
