@@ -134,14 +134,20 @@ export default function TopNav() {
                   >
                     <img
                       className="rounded-full w-[35px] h-[35px]"
-                      src="https://placehold.co/35"
+                      src={useCreateBucketUrl(contextUser?.user?.image) || ""}
                       alt="profile"
                     />
                   </button>
 
                   {showMenu ? (
                     <div className="absolute bg-white rounded-lg py-1.5 w-[200px] shadow-xl border top-[40px] right-0">
-                      <button className="flex items-center w-full justify-start py-3 px-2 hover:bg-gray-100 cursor-pointer">
+                      <button
+                        onClick={() => {
+                          router.push(`/profile/${contextUser?.user?.id}`);
+                          setShowMenu(false);
+                        }}
+                        className="flex items-center w-full justify-start py-3 px-2 hover:bg-gray-100 cursor-pointer"
+                      >
                         <BiUser size={20} />
                         <span className="pl-2 font-semibold text-sm">
                           Profile
