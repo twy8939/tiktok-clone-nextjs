@@ -134,7 +134,10 @@ export default function TopNav() {
                   >
                     <img
                       className="rounded-full w-[35px] h-[35px]"
-                      src={useCreateBucketUrl(contextUser?.user?.image) || ""}
+                      src={
+                        useCreateBucketUrl(contextUser?.user?.image) ||
+                        undefined
+                      }
                       alt="profile"
                     />
                   </button>

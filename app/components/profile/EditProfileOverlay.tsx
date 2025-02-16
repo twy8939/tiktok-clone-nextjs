@@ -151,7 +151,9 @@ export default function EditProfileOverlay() {
                       <img
                         className="rounded-full"
                         width="95"
-                        src={useCreateBucketUrl(userImage)}
+                        src={
+                          userImage ? useCreateBucketUrl(userImage) : undefined
+                        }
                         alt="profile image"
                       />
 
@@ -230,7 +232,7 @@ export default function EditProfileOverlay() {
                   stencilProps={{ aspectRatio: 1 }}
                   className="h-[400px]"
                   onChange={(cropper) => setCropper(cropper.getCoordinates())}
-                  src={uploadedImage}
+                  src={uploadedImage || undefined}
                 />
               </div>
             )}

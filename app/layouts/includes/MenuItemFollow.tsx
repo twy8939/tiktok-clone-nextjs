@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
 import { MenuItemFollowCompTypes } from "@/app/types";
 import Link from "next/link";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -13,7 +14,7 @@ export default function MenuItemFollow({ user }: MenuItemFollowCompTypes) {
         <img
           className="rounded-full lg:mx-0 mx-auto"
           width={35}
-          src={user?.image}
+          src={useCreateBucketUrl(user?.image)}
           alt={`${user?.name}`}
         />
 

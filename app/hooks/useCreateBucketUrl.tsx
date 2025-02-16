@@ -3,7 +3,7 @@ const useCreateBucketUrl = (fileId: string) => {
   const id = process.env.NEXT_PUBLIC_BUCKET_ID;
   const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
 
-  if (!url || !id || !endpoint || !fileId) return "";
+  if (!url || !id || !endpoint || !fileId) return undefined;
 
   return `${url}/storage/buckets/${id}/files/${fileId}/view?project=${endpoint}`;
 };
