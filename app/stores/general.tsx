@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { create } from "zustand";
 import { RandomUsers } from "../types";
 import { createJSONStorage, persist, devtools } from "zustand/middleware";

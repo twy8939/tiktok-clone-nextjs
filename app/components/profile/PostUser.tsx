@@ -13,14 +13,16 @@ export default function PostUser({ post }: PostUserCompTypes) {
       `video${post?.id}`
     ) as HTMLVideoElement;
 
-    setTimeout(() => {
-      video.addEventListener("mouseenter", () => {
-        video.play();
-      });
-      video.addEventListener("mouseleave", () => {
-        video.pause();
-      });
-    }, 50);
+    if (video) {
+      setTimeout(() => {
+        video.addEventListener("mouseenter", () => {
+          video.play();
+        });
+        video.addEventListener("mouseleave", () => {
+          video.pause();
+        });
+      }, 50);
+    }
   }, []);
   return (
     <>
