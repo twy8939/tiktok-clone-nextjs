@@ -53,7 +53,7 @@ export default function EditProfileOverlay() {
 
   const updateUserInfo = async () => {
     const isError = validate();
-    if (!isError) return;
+    if (isError) return;
     if (!contextUser?.user) return;
 
     try {

@@ -1,39 +1,51 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
 import ClientOnly from "@/app/components/ClientOnly";
 import Comments from "@/app/components/post/Comments";
 import CommentsHeader from "@/app/components/post/CommentsHeader";
+import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
+import { useCommentStore } from "@/app/stores/comment";
+import { useLikeStore } from "@/app/stores/like";
+import { usePostStore } from "@/app/stores/post";
 import { PostPageTypes } from "@/app/types";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 
 export default function Post() {
-  // const router = useRouter();
+  const { postById, postsByUser, setPostById, setPostsByUser } = usePostStore();
+  const { setLikesByPost } = useLikeStore();
+  const { setCommentsByPost } = useCommentStore();
+
+  const router = useRouter();
   const params = useParams<PostPageTypes>();
 
-  const postById = {
-    id: "123",
-    user_id: "456",
-    video_url: "/beach.mp4",
-    text: "this is some text",
-    create_at: "date here",
-    profile: {
-      user_id: "456",
-      name: "User 1",
-      image: "https://placehold.co/100",
-    },
-  };
-
   const loopThroughPostsUp = () => {
-    console.log("loopThroughPostsUp");
+    postsByUser.forEach((post) => {
+      if (post.id > params.postId) {
+        router.push(`/post/${post.id}/${params.userId}`);
+      }
+    });
   };
 
   const loopThroughPostsDown = () => {
-    console.log("loopThroughPostsDown");
+    postsByUser.forEach((post) => {
+      if (post.id < params.postId) {
+        router.push(`/post/${post.id}/${params.userId}`);
+      }
+    });
   };
+
+  useEffect(() => {
+    setPostById(params.postId);
+    setCommentsByPost(params.postId);
+    setLikesByPost(params.postId);
+    setPostsByUser(params.userId);
+  }, []);
 
   return (
     <>
@@ -75,7 +87,7 @@ export default function Post() {
             {postById?.video_url ? (
               <video
                 className="fixed object-cover w-full my-auto z-[0] h-screen"
-                src="/beach.mp4"
+                src={useCreateBucketUrl(postById?.video_url)}
               />
             ) : null}
 
@@ -87,7 +99,7 @@ export default function Post() {
                   loop
                   muted
                   className="h-screen mx-auto"
-                  src="/beach.mp4"
+                  src={useCreateBucketUrl(postById?.video_url)}
                 />
               ) : null}
             </div>
@@ -100,7 +112,7 @@ export default function Post() {
           <div className="py-7" />
 
           <ClientOnly>
-            {postById ? <CommentsHeader post={postById} /> : null}
+            {postById?.video_url ? <CommentsHeader post={postById} /> : null}
           </ClientOnly>
           <Comments />
         </div>
