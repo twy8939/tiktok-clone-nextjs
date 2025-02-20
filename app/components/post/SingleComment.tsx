@@ -7,6 +7,7 @@ import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
 import useDeleteComment from "@/app/hooks/useDeleteComment";
 import { useCommentStore } from "@/app/stores/comment";
 import { PostPageTypes, SingleCommentCompTypes } from "@/app/types";
+import moment from "moment";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -56,7 +57,7 @@ export default function SingleComment({ comment }: SingleCommentCompTypes) {
               <span className="flex items-center">
                 {comment?.profile?.name} -
                 <span className="text-[12px] text-gray-600 font-light ml-1">
-                  {comment?.create_at}
+                  {moment(comment?.create_at).calendar()}
                 </span>
               </span>
 
