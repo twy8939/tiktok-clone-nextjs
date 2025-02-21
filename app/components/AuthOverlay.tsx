@@ -7,8 +7,8 @@ import Login from "@/app/components/auth/Login";
 import { useGeneralStore } from "../stores/general";
 
 export default function AuthOverlay() {
-  let { setIsLoginOpen } = useGeneralStore();
-  let [isRegister, setIsRegister] = useState<boolean>(false);
+  const { setIsLoginOpen } = useGeneralStore();
+  const [isRegister, setIsRegister] = useState<boolean>(false);
   return (
     <>
       <div
